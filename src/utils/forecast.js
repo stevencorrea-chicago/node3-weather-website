@@ -15,6 +15,7 @@ const forecast = (latitude, longitude, placeName, callback) => {
         } else if(body.error) {
             callback('Unable to find location. Verify the location was entered correctly and try again.')
         } else {
+            console.log(body)
             const temperature_unit = () => {
                 switch(body.request.unit){
                     case 'm':
@@ -25,13 +26,21 @@ const forecast = (latitude, longitude, placeName, callback) => {
                         return 'kelvin';
                 };
             };
-        
-            return_value = ("It is currently " + body.current.temperature + 
-                        " degrees "  + temperature_unit() + " @ " + placeName + 
-                        ". It feels like " + body.current.feelslike + " degrees " + 
-                        temperature_unit() + ".")
             
-            callback(undefined, return_value)
+            if (body.current.temperature === body.current.feelslike){
+                const return_value = ("It is currently " + body.current.temperature + 
+                " degrees "  + temperature_unit() + ", and it feels like " 
+                + body.current.feelslike + " degrees " + 
+                temperature_unit() + ".")
+                callback(undefined, return_value)
+            } else{
+                const return_value = ("It is currently " + body.current.temperature + 
+                        " degrees "  + temperature_unit() + ", but it feels like " 
+                        + body.current.feelslike + " degrees " + 
+                        temperature_unit() + ".")
+                callback(undefined, return_value)
+            }
+            
         }
     })
 }
